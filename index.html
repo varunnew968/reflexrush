@@ -1,12 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
+    <script src="https://pl32073951.profitableratecpmnetwork.com/b7/a6/37/b7a637d5bbf0a808c90a342d8775c760.js"></script>
+    <script data-cfasync="false" src="https://bicea.org/14/d945b935a7e6b3870dd07937a497d954"></script>
+    <script>
+      atOptions = {
+        'key' : 'b71ab0679430006c8c3b1b0bb7c1fbf4',
+        'format' : 'iframe',
+        'height' : 250,
+        'width' : 300,
+        'params' : {}
+      };
+    </script>
+    <script src="https://bicea.org/22/b71ab0679430006c8c3b1b0bb7c1fbf4"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ReflexRush ⚡ Test Your Reaction Speed</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=JetBrains+Mono:wght@700&display=swap"
+        rel="stylesheet">
     <style>
         :root {
             --bg-color: #050508;
@@ -37,7 +52,7 @@
 
         body {
             background-color: var(--bg-color);
-            background-image: 
+            background-image:
                 radial-gradient(circle at 15% 15%, rgba(157, 0, 255, 0.08) 0%, transparent 40%),
                 radial-gradient(circle at 85% 85%, rgba(0, 240, 255, 0.06) 0%, transparent 40%);
             color: var(--text-main);
@@ -105,8 +120,15 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Friend Challenge Incoming Banner */
@@ -382,7 +404,7 @@
             border-radius: 30px;
             font-size: 0.8rem;
             font-weight: 600;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             z-index: 1000;
             pointer-events: none;
@@ -400,6 +422,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <div class="app-container">
@@ -430,10 +453,12 @@
 
             <div class="hero-section">
                 <h1 class="hero-title">Think You're Fast? Prove It!</h1>
-                <p class="hero-subtitle">Tap the screen the moment it turns green. Find your reaction speed and challenge your friends.</p>
-                
+                <p class="hero-subtitle">Tap the screen the moment it turns green. Find your reaction speed and
+                    challenge your friends.</p>
+
                 <div class="instructions-box">
-                    📌 <strong>How to play:</strong> Wait for GREEN. Tap too early and the round doesn't count. Complete 3 valid rounds to calculate your score!
+                    📌 <strong>How to play:</strong> Wait for GREEN. Tap too early and the round doesn't count. Complete
+                    3 valid rounds to calculate your score!
                 </div>
 
                 <button class="btn btn-primary" id="start-test-btn">
@@ -451,7 +476,8 @@
             <div class="game-wrapper">
                 <div class="game-header-bar">
                     <span id="round-indicator" class="round-badge">Round 1 of 3</span>
-                    <button class="btn-secondary" id="abort-btn" style="padding: 6px 12px; font-size: 0.7rem; border-radius: 12px; width: auto;">Quit</button>
+                    <button class="btn-secondary" id="abort-btn"
+                        style="padding: 6px 12px; font-size: 0.7rem; border-radius: 12px; width: auto;">Quit</button>
                 </div>
 
                 <div id="reaction-arena" class="reaction-arena waiting">
@@ -470,7 +496,8 @@
                 <div id="res-avg-score" class="main-score-display">241 ms</div>
                 <div id="res-rating" class="rating-badge">Pretty Sharp! 🎯</div>
 
-                <div class="preview-card" style="margin-bottom: 0; background: transparent; border: none; padding: 10px 0 0 0;">
+                <div class="preview-card"
+                    style="margin-bottom: 0; background: transparent; border: none; padding: 10px 0 0 0;">
                     <div class="stat-box">
                         <span class="stat-label">Best Round</span>
                         <span id="res-best-round" class="stat-value">196 ms</span>
@@ -603,7 +630,7 @@
             if (navigator.vibrate) {
                 try {
                     navigator.vibrate(pattern);
-                } catch (e) {}
+                } catch (e) { }
             }
         }
 
@@ -742,13 +769,13 @@
                 arenaSubtitle.textContent = 'Tap anywhere to retry this round';
                 playTone(150, 'sawtooth', 0.3);
                 triggerVibration([80, 50, 80]);
-            } 
+            }
             else if (currentState === GameState.READY) {
                 // Valid tap
                 const elapsed = Math.round(performance.now() - startTime);
                 currentState = GameState.ROUND_RESULT;
                 roundScores.push(elapsed);
-                
+
                 reactionArena.className = 'reaction-arena success';
                 arenaTitle.textContent = `${elapsed} ms`;
                 arenaSubtitle.textContent = currentRound < totalRounds ? 'Great! Getting ready for next round...' : 'Calculating final score...';
@@ -808,12 +835,12 @@
 
         /* --- SHARING & CURIOUSITY-DRIVEN TEMPLATE --- */
         function getShareData() {
-            const lastAvg = roundScores.length === 3 ? Math.round((roundScores[0] + roundScores[1] + roundScores[2])/3) : 241;
+            const lastAvg = roundScores.length === 3 ? Math.round((roundScores[0] + roundScores[1] + roundScores[2]) / 3) : 241;
             const bestR = roundScores.length === 3 ? Math.min(...roundScores) : (stats.best || 196);
-            
+
             // Curiosity-driven text template
             const shareText = `Think your reflexes are faster than mine?\n\nI just scored a ${lastAvg} ms average (Best: ${bestR} ms) on ReflexRush ⚡\n\nMost people can't break 250 ms. Can you beat it? Play here:\n${window.location.origin}${window.location.pathname}?avg=${lastAvg}&best=${bestR}`;
-            
+
             return { lastAvg, bestR, shareText };
         }
 
@@ -885,4 +912,5 @@
         });
     </script>
 </body>
+
 </html>
