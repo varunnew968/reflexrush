@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ReflexRush ⚡ Test Your Reaction Speed</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #050508;
+            --card-bg: rgba(18, 18, 26, 0.75);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --neon-green: #00ff66;
+            --neon-green-glow: rgba(0, 255, 102, 0.35);
+            --electric-blue: #00f0ff;
+            --electric-blue-glow: rgba(0, 240, 255, 0.3);
+            --violet-accent: #9d00ff;
+            --violet-glow: rgba(157, 0, 255, 0.35);
+            --danger-red: #ff3366;
+            --danger-glow: rgba(255, 51, 102, 0.4);
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --font-main: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --transition-speed: 0.25s;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(157, 0, 255, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 85% 85%, rgba(0, 240, 255, 0.06) 0%, transparent 40%);
+            color: var(--text-main);
+            font-family: var(--font-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            padding: 12px;
+        }
+
+        /* Mobile Container Frame (fits 320px - 480px perfectly, desktop styled) */
+        .app-container {
+            width: 100%;
+            max-width: 420px;
+            min-height: 92vh;
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            border-radius: 28px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(157, 0, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, var(--neon-green), var(--electric-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px var(--neon-green-glow);
+            margin-bottom: 4px;
+        }
+
+        .tagline {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Views management */
+        .view {
+            display: none;
+            flex-direction: column;
+            flex: 1;
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        .view.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Friend Challenge Incoming Banner */
+        .challenge-banner {
+            background: linear-gradient(135deg, rgba(157, 0, 255, 0.15), rgba(0, 240, 255, 0.15));
+            border: 1px solid var(--electric-blue);
+            border-radius: 16px;
+            padding: 14px;
+            margin-bottom: 16px;
+            text-align: center;
+            box-shadow: 0 0 15px var(--electric-blue-glow);
+        }
+
+        .challenge-banner h3 {
+            font-size: 0.95rem;
+            color: var(--electric-blue);
+            margin-bottom: 4px;
+        }
+
+        .challenge-banner p {
+            font-size: 0.8rem;
+            color: var(--text-main);
+        }
+
+        /* Score Preview Card */
+        .preview-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 20px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            text-align: center;
+        }
+
+        .stat-box {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .stat-label {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .stat-value {
+            font-family: var(--font-mono);
+            font-size: 1.05rem;
+            color: var(--neon-green);
+            font-weight: 700;
+            text-shadow: 0 0 10px var(--neon-green-glow);
+        }
+
+        .hero-section {
+            text-align: center;
+            margin: auto 0;
+            padding: 10px 0;
+        }
+
+        .hero-title {
+            font-size: 1.45rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            line-height: 1.4;
+        }
+
+        .instructions-box {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px 14px;
+            border-radius: 12px;
+            border-left: 3px solid var(--electric-blue);
+            margin-bottom: 24px;
+            text-align: left;
+        }
+
+        /* Buttons */
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border-radius: 16px;
+            font-family: var(--font-main);
+            font-size: 1rem;
+            font-weight: 800;
+            cursor: pointer;
+            border: none;
+            transition: transform 0.1s ease, box-shadow 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn:active {
+            transform: scale(0.97);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--neon-green), #00cc52);
+            color: #000;
+            box-shadow: 0 6px 25px var(--neon-green-glow);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-main);
+            border: 1px solid var(--card-border);
+        }
+
+        .btn-whatsapp {
+            background: #25d366;
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+        }
+
+        .btn-danger {
+            background: rgba(255, 51, 102, 0.15);
+            color: var(--danger-red);
+            border: 1px solid rgba(255, 51, 102, 0.3);
+            font-size: 0.8rem;
+            padding: 12px;
+            margin-top: 16px;
+        }
+
+        /* Game Arena Screen */
+        .game-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .game-header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+
+        .round-badge {
+            background: rgba(255, 255, 255, 0.06);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-family: var(--font-mono);
+            color: var(--electric-blue);
+        }
+
+        .reaction-arena {
+            flex: 1;
+            border-radius: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.15s ease, box-shadow 0.15s ease;
+            position: relative;
+            overflow: hidden;
+            min-height: 280px;
+            border: 2px solid var(--card-border);
+            background: rgba(255, 51, 102, 0.08);
+        }
+
+        .reaction-arena.waiting {
+            background: radial-gradient(circle, rgba(255, 51, 102, 0.15) 0%, rgba(10, 10, 15, 0.9) 100%);
+            border-color: rgba(255, 51, 102, 0.3);
+        }
+
+        .reaction-arena.ready {
+            background: radial-gradient(circle, rgba(0, 255, 102, 0.3) 0%, rgba(5, 20, 10, 0.95) 100%);
+            border-color: var(--neon-green);
+            box-shadow: 0 0 40px var(--neon-green-glow);
+        }
+
+        .reaction-arena.too-early {
+            background: radial-gradient(circle, rgba(255, 51, 102, 0.35) 0%, rgba(20, 5, 8, 0.95) 100%);
+            border-color: var(--danger-red);
+            box-shadow: 0 0 40px var(--danger-glow);
+        }
+
+        .reaction-arena.success {
+            background: rgba(0, 240, 255, 0.1);
+            border-color: var(--electric-blue);
+        }
+
+        .arena-text-main {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .arena-text-sub {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Results Screen */
+        .results-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .main-score-display {
+            font-family: var(--font-mono);
+            font-size: 2.5rem;
+            color: var(--neon-green);
+            font-weight: 800;
+            text-shadow: 0 0 20px var(--neon-green-glow);
+            margin: 6px 0;
+        }
+
+        .rating-badge {
+            display: inline-block;
+            background: rgba(157, 0, 255, 0.2);
+            border: 1px solid var(--violet-accent);
+            color: #d8b4fe;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .breakdown-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px solid var(--card-border);
+        }
+
+        .action-button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* Toast notifications */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #181824;
+            color: var(--text-main);
+            border: 1px solid var(--electric-blue);
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 14px;
+            font-size: 0.65rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- HEADER -->
+        <header>
+            <div class="logo">ReflexRush ⚡</div>
+            <div class="tagline">Test Your Reaction Speed</div>
+        </header>
+
+        <!-- VIEW 1: HOMEPAGE -->
+        <div id="home-view" class="view active">
+            <div id="incoming-challenge-container"></div>
+
+            <div class="preview-card">
+                <div class="stat-box">
+                    <span class="stat-label">Best</span>
+                    <span id="home-best" class="stat-value">-- ms</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Average</span>
+                    <span id="home-avg" class="stat-value">-- ms</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Played</span>
+                    <span id="home-games" class="stat-value">0</span>
+                </div>
+            </div>
+
+            <div class="hero-section">
+                <h1 class="hero-title">Think You're Fast? Prove It!</h1>
+                <p class="hero-subtitle">Tap the screen the moment it turns green. Find your reaction speed and challenge your friends.</p>
+                
+                <div class="instructions-box">
+                    📌 <strong>How to play:</strong> Wait for GREEN. Tap too early and the round doesn't count. Complete 3 valid rounds to calculate your score!
+                </div>
+
+                <button class="btn btn-primary" id="start-test-btn">
+                    START TEST ⚡
+                </button>
+            </div>
+
+            <button class="btn btn-danger" id="clear-history-btn" style="display:none;">
+                🗑️ Clear History
+            </button>
+        </div>
+
+        <!-- VIEW 2: GAME ARENA -->
+        <div id="game-view" class="view">
+            <div class="game-wrapper">
+                <div class="game-header-bar">
+                    <span id="round-indicator" class="round-badge">Round 1 of 3</span>
+                    <button class="btn-secondary" id="abort-btn" style="padding: 6px 12px; font-size: 0.7rem; border-radius: 12px; width: auto;">Quit</button>
+                </div>
+
+                <div id="reaction-arena" class="reaction-arena waiting">
+                    <div id="arena-content">
+                        <div class="arena-text-main" id="arena-title">WAIT FOR GREEN</div>
+                        <div class="arena-text-sub" id="arena-subtitle">Keep your finger ready...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 3: RESULTS SCREEN -->
+        <div id="results-view" class="view">
+            <div class="results-card">
+                <span class="stat-label">Your Reflex Score</span>
+                <div id="res-avg-score" class="main-score-display">241 ms</div>
+                <div id="res-rating" class="rating-badge">Pretty Sharp! 🎯</div>
+
+                <div class="preview-card" style="margin-bottom: 0; background: transparent; border: none; padding: 10px 0 0 0;">
+                    <div class="stat-box">
+                        <span class="stat-label">Best Round</span>
+                        <span id="res-best-round" class="stat-value">196 ms</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-label">Personal Best</span>
+                        <span id="res-personal-best" class="stat-value">196 ms</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-label">Total Tests</span>
+                        <span id="res-total-tests" class="stat-value">1</span>
+                    </div>
+                </div>
+
+                <div class="breakdown-grid">
+                    <div class="stat-box">
+                        <span class="stat-label">Round 1</span>
+                        <span id="res-r1" class="stat-value" style="font-size:0.9rem;">-- ms</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-label">Round 2</span>
+                        <span id="res-r2" class="stat-value" style="font-size:0.9rem;">-- ms</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-label">Round 3</span>
+                        <span id="res-r3" class="stat-value" style="font-size:0.9rem;">-- ms</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-button-group">
+                <button class="btn btn-primary" id="challenge-friends-btn">
+                    CHALLENGE FRIENDS 🚀
+                </button>
+                <button class="btn btn-whatsapp" id="share-whatsapp-btn">
+                    SHARE ON WHATSAPP 📲
+                </button>
+                <button class="btn btn-secondary" id="play-again-btn">
+                    PLAY AGAIN 🔄
+                </button>
+            </div>
+        </div>
+
+        <footer>ReflexRush v1.2 • Zero dependencies</footer>
+    </div>
+
+    <div id="toast" class="toast">Link copied to clipboard! 📋</div>
+
+    <script>
+        /* --- CONFIGURABLE SPEED RATINGS --- */
+        const RATINGS = [
+            { max: 180, label: "Lightning Fast ⚡" },
+            { max: 240, label: "Super Quick 🔥" },
+            { max: 320, label: "Pretty Sharp 🎯" },
+            { max: 400, label: "Keep Practicing 💪" },
+            { max: 9999, label: "Warm Up and Try Again 🚀" }
+        ];
+
+        /* --- GAME STATE MACHINE --- */
+        const GameState = {
+            IDLE: 'IDLE',
+            WAITING: 'WAITING',
+            READY: 'READY',
+            TOO_EARLY: 'TOO_EARLY',
+            ROUND_RESULT: 'ROUND_RESULT',
+            FINISHED: 'FINISHED'
+        };
+
+        let currentState = GameState.IDLE;
+        let currentRound = 1;
+        const totalRounds = 3;
+        let roundScores = [];
+        let startTime = 0;
+        let timeoutId = null;
+
+        /* --- LOCALSTORAGE PERSISTENCE --- */
+        const STORAGE_KEY = 'reflex_rush_stats_v1';
+        let stats = {
+            best: null,
+            totalGames: 0,
+            previousAverages: [],
+            lastPlayed: null
+        };
+
+        function loadStats() {
+            try {
+                const data = localStorage.getItem(STORAGE_KEY);
+                if (data) {
+                    stats = JSON.parse(data);
+                }
+            } catch (e) {
+                console.warn('LocalStorage unavailable:', e);
+            }
+        }
+
+        function saveStats() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(stats));
+            } catch (e) {
+                console.warn('Could not save to LocalStorage:', e);
+            }
+        }
+
+        /* --- AUDIO SYNTHESIZER (No external files) --- */
+        let audioCtx = null;
+        function playTone(freq, type, duration) {
+            try {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.value = freq;
+                gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch (e) {
+                // Audio not allowed or supported
+            }
+        }
+
+        function triggerVibration(pattern) {
+            if (navigator.vibrate) {
+                try {
+                    navigator.vibrate(pattern);
+                } catch (e) {}
+            }
+        }
+
+        /* --- DOM ELEMENTS --- */
+        const views = {
+            home: document.getElementById('home-view'),
+            game: document.getElementById('game-view'),
+            results: document.getElementById('results-view')
+        };
+
+        const homeBest = document.getElementById('home-best');
+        const homeAvg = document.getElementById('home-avg');
+        const homeGames = document.getElementById('home-games');
+        const clearHistoryBtn = document.getElementById('clear-history-btn');
+        const startTestBtn = document.getElementById('start-test-btn');
+        const abortBtn = document.getElementById('abort-btn');
+        const roundIndicator = document.getElementById('round-indicator');
+        const reactionArena = document.getElementById('reaction-arena');
+        const arenaTitle = document.getElementById('arena-title');
+        const arenaSubtitle = document.getElementById('arena-subtitle');
+
+        const resAvgScore = document.getElementById('res-avg-score');
+        const resRating = document.getElementById('res-rating');
+        const resBestRound = document.getElementById('res-best-round');
+        const resPersonalBest = document.getElementById('res-personal-best');
+        const resTotalTests = document.getElementById('res-total-tests');
+        const resR1 = document.getElementById('res-r1');
+        const resR2 = document.getElementById('res-r2');
+        const resR3 = document.getElementById('res-r3');
+        const challengeFriendsBtn = document.getElementById('challenge-friends-btn');
+        const shareWhatsappBtn = document.getElementById('share-whatsapp-btn');
+        const playAgainBtn = document.getElementById('play-again-btn');
+        const toast = document.getElementById('toast');
+        const incomingChallengeContainer = document.getElementById('incoming-challenge-container');
+
+        function switchView(viewName) {
+            Object.values(views).forEach(v => v.classList.remove('active'));
+            views[viewName].classList.add('active');
+        }
+
+        function showToast(msg) {
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+
+        function updateHomeDisplay() {
+            loadStats();
+            homeBest.textContent = stats.best !== null ? `${stats.best} ms` : '-- ms';
+            const lastAvg = stats.previousAverages.length > 0 ? stats.previousAverages[stats.previousAverages.length - 1] : null;
+            homeAvg.textContent = lastAvg !== null ? `${lastAvg} ms` : '-- ms';
+            homeGames.textContent = stats.totalGames;
+
+            if (stats.totalGames > 0 || stats.best !== null) {
+                clearHistoryBtn.style.display = 'block';
+            } else {
+                clearHistoryBtn.style.display = 'none';
+            }
+        }
+
+        /* --- INCOMING CHALLENGE PARSER --- */
+        function checkIncomingChallenge() {
+            const params = new URLSearchParams(window.location.search);
+            const friendAvg = parseInt(params.get('avg'), 10);
+            const friendBest = parseInt(params.get('best'), 10);
+
+            if (!isNaN(friendAvg) && !isNaN(friendBest)) {
+                incomingChallengeContainer.innerHTML = `
+                    <div class="challenge-banner">
+                        <h3>⚡ FRIEND CHALLENGE INCOMING!</h3>
+                        <p>Your friend scored an average of <strong>${friendAvg} ms</strong> (Best: ${friendBest} ms)!</p>
+                    </div>
+                `;
+            }
+        }
+
+        /* --- GAME LOGIC --- */
+        startTestBtn.addEventListener('click', () => {
+            currentRound = 1;
+            roundScores = [];
+            switchView('game');
+            startRound();
+        });
+
+        abortBtn.addEventListener('click', () => {
+            clearTimeout(timeoutId);
+            currentState = GameState.IDLE;
+            updateHomeDisplay();
+            switchView('home');
+        });
+
+        playAgainBtn.addEventListener('click', () => {
+            currentRound = 1;
+            roundScores = [];
+            switchView('game');
+            startRound();
+        });
+
+        function startRound() {
+            currentState = GameState.WAITING;
+            roundIndicator.textContent = `Round ${currentRound} of ${totalRounds}`;
+            reactionArena.className = 'reaction-arena waiting';
+            arenaTitle.textContent = 'WAIT FOR GREEN';
+            arenaSubtitle.textContent = 'Keep your finger ready...';
+
+            playTone(220, 'sine', 0.1);
+
+            // Random delay between 1.5s and 4.5s
+            const randomDelay = Math.floor(Math.random() * 3000) + 1500;
+
+            timeoutId = setTimeout(() => {
+                if (currentState === GameState.WAITING) {
+                    currentState = GameState.READY;
+                    reactionArena.className = 'reaction-arena ready';
+                    arenaTitle.textContent = 'TAP NOW!';
+                    arenaSubtitle.textContent = '⚡ GO!';
+                    startTime = performance.now();
+                    playTone(587.33, 'triangle', 0.15);
+                    triggerVibration(40);
+                }
+            }, randomDelay);
+        }
+
+        // Handle tap / click on reaction arena
+        reactionArena.addEventListener('pointerdown', (e) => {
+            e.preventDefault();
+
+            if (currentState === GameState.WAITING) {
+                // False start!
+                clearTimeout(timeoutId);
+                currentState = GameState.TOO_EARLY;
+                reactionArena.className = 'reaction-arena too-early';
+                arenaTitle.textContent = 'Too Early! ⚠️';
+                arenaSubtitle.textContent = 'Tap anywhere to retry this round';
+                playTone(150, 'sawtooth', 0.3);
+                triggerVibration([80, 50, 80]);
+            } 
+            else if (currentState === GameState.READY) {
+                // Valid tap
+                const elapsed = Math.round(performance.now() - startTime);
+                currentState = GameState.ROUND_RESULT;
+                roundScores.push(elapsed);
+                
+                reactionArena.className = 'reaction-arena success';
+                arenaTitle.textContent = `${elapsed} ms`;
+                arenaSubtitle.textContent = currentRound < totalRounds ? 'Great! Getting ready for next round...' : 'Calculating final score...';
+                playTone(880, 'sine', 0.2);
+                triggerVibration(60);
+
+                setTimeout(() => {
+                    if (currentState === GameState.ROUND_RESULT) {
+                        if (currentRound < totalRounds) {
+                            currentRound++;
+                            startRound();
+                        } else {
+                            finishGame();
+                        }
+                    }
+                }, 1200);
+            }
+            else if (currentState === GameState.TOO_EARLY) {
+                // Retry same round after false start
+                startRound();
+            }
+        });
+
+        function finishGame() {
+            currentState = GameState.FINISHED;
+
+            // Calculate arithmetic average
+            const sum = roundScores.reduce((a, b) => a + b, 0);
+            const avg = Math.round(sum / roundScores.length);
+            const bestRound = Math.min(...roundScores);
+
+            // Update stats
+            loadStats();
+            stats.totalGames += 1;
+            stats.previousAverages.push(avg);
+            if (stats.best === null || bestRound < stats.best) {
+                stats.best = bestRound;
+            }
+            stats.lastPlayed = new Date().toISOString();
+            saveStats();
+
+            // Populate results view
+            resAvgScore.textContent = `${avg} ms`;
+            const matchingRating = RATINGS.find(r => avg <= r.max);
+            resRating.textContent = matchingRating ? matchingRating.label : "Lightning Fast ⚡";
+
+            resBestRound.textContent = `${bestRound} ms`;
+            resPersonalBest.textContent = `${stats.best} ms`;
+            resTotalTests.textContent = stats.totalGames;
+
+            resR1.textContent = `${roundScores[0]} ms`;
+            resR2.textContent = `${roundScores[1]} ms`;
+            resR3.textContent = `${roundScores[2]} ms`;
+
+            switchView('results');
+        }
+
+        /* --- SHARING & CURIOUSITY-DRIVEN TEMPLATE --- */
+        function getShareData() {
+            const lastAvg = roundScores.length === 3 ? Math.round((roundScores[0] + roundScores[1] + roundScores[2])/3) : 241;
+            const bestR = roundScores.length === 3 ? Math.min(...roundScores) : (stats.best || 196);
+            
+            // Curiosity-driven text template
+            const shareText = `Think your reflexes are faster than mine?\n\nI just scored a ${lastAvg} ms average (Best: ${bestR} ms) on ReflexRush ⚡\n\nMost people can't break 250 ms. Can you beat it? Play here:\n${window.location.origin}${window.location.pathname}?avg=${lastAvg}&best=${bestR}`;
+            
+            return { lastAvg, bestR, shareText };
+        }
+
+        challengeFriendsBtn.addEventListener('click', async () => {
+            const { shareText } = getShareData();
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: 'ReflexRush Challenge ⚡',
+                        text: shareText,
+                        url: window.location.href
+                    });
+                    return;
+                } catch (e) {
+                    // Fall back to clipboard if cancelled or unsupported
+                }
+            }
+            copyToClipboard(shareText);
+        });
+
+        shareWhatsappBtn.addEventListener('click', () => {
+            const { shareText } = getShareData();
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
+            window.open(whatsappUrl, '_blank');
+        });
+
+        function copyToClipboard(text) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showToast('Challenge link copied! 📋');
+                }).catch(() => {
+                    fallbackCopy(text);
+                });
+            } else {
+                fallbackCopy(text);
+            }
+        }
+
+        function fallbackCopy(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            document.body.appendChild(textarea);
+            textarea.focus();
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                showToast('Challenge link copied! 📋');
+            } catch (e) {
+                showToast('Could not copy link.');
+            }
+            document.body.removeChild(textarea);
+        }
+
+        /* --- CLEAR HISTORY --- */
+        clearHistoryBtn.addEventListener('click', () => {
+            if (confirm('Are you sure you want to clear your personal best and game history?')) {
+                stats = { best: null, totalGames: 0, previousAverages: [], lastPlayed: null };
+                saveStats();
+                updateHomeDisplay();
+                showToast('History cleared.');
+            }
+        });
+
+        /* --- INITIALIZATION --- */
+        window.addEventListener('DOMContentLoaded', () => {
+            checkIncomingChallenge();
+            updateHomeDisplay();
+        });
+    </script>
+</body>
+</html>
